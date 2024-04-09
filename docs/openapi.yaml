@@ -1,0 +1,341 @@
+openapi: 3.0.3
+info:
+  title: CarInfo API
+  description: CarInfo
+  version: 0.0.1
+  contact:
+    name: Artur Z
+    email: zagart47@gmail.com
+    url: https://t.me/zagart47
+servers:
+  - url: 'https://localhost:8080'
+paths:
+  /cars:
+    get:
+      tags:
+        - Все автомобили
+      summary: Получить список всех автомобилей из базы данных
+      description: Хендлер для получения ***всех*** автомобилей из базы данных. Есть возможность использовать фильтрацию и пагинацию.
+      operationId: GetAllCars
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы в рамках пагинации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: 2
+        - name: per_page
+          in: query
+          description: Число элементов на странице в рамках пагинации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: 10
+        - name: mark
+          in: query
+          description: Марка автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: Ford
+        - name: model
+          in: query
+          description: Модель автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: Focus
+        - name: reg_num
+          in: query
+          description: Регистрационный номер автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: X666XX777
+        - name: year
+          in: query
+          description: Год выпуска автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: 2005
+        - name: owner_name
+          in: query
+          description: Имя владельца автомобиля автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: Иван
+        - name: owner_surname
+          in: query
+          description: Фамилия владельца автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: Иванов
+        - name: owner_patronymic
+          in: query
+          description: Отчество владельца автомобиля в рамках фильтрации результатов запроса
+          required: false
+          allowEmptyValue: false
+          example: Иванович
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                title: Cars
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+                example:
+                  - id: 1
+                    regNum: X111XX777
+                    mark: Toyota
+                    model: Prius
+                    year: 2010
+                    owner:
+                      name: Василий
+                      surname: Иванов
+                      patronymic: Петрович
+                  - id: 2
+                    regNum: Y222YY777
+                    mark: Nissan
+                    model: Z350
+                    year: 2005
+                    owner:
+                      name: Василий
+                      surname: Иванов
+                      patronymic: Петрович
+        400:
+          description: Ошибки в аргументе или запросах
+          content:
+            application/json:
+              schema:
+                title: all cars getting error
+                type: object
+                example: all cars getting error
+        500:
+          description: Ошибка на стороне сервера
+  /car/{id}:
+    get:
+      tags:
+        - Один автомобиль
+      summary: Получить один автомобиль по id из базы данных
+      description: Хендлер для получения ***одного*** автомобиля из базы данных
+      operationId: GetOneCar
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор. Метод найдет по нему автомобиль в базе данных.
+          required: true
+          allowEmptyValue: false
+          example: 2
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                example:
+                    id: 1
+                    regNum: X111XX777
+                    mark: Toyota
+                    model: Prius
+                    year: 2010
+                    owner:
+                      name: Василий
+                      surname: Иванов
+                      patronymic: Петрович
+        400:
+          description: Ошибки в аргументе или запросах
+          content:
+            application/json:
+              schema:
+                title: car not found
+                type: object
+                example: car not found
+        500:
+          description: Ошибка на стороне сервера
+  /car/new:
+    post:
+      tags:
+        - Добавить автомобили
+      summary: Позволяет добавить один или несколько автомобилей
+      description: Добавить автомобили путем вставки регистрационных номеров. Метод передаст запрос в сторонний API для обогащения данных по автомобилям.
+      operationId: AddNewCars
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                regNums:
+                  type: array
+                  example: [ "X111XX777","Y222YY777" ]
+                  description: Регистрационный номер автомобиля
+                  required: true
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                title: Cars
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+                example:
+                  - id: 1
+                    regNum: X111XX777
+                    mark: Toyota
+                    model: Prius
+                    year: 2010
+                    owner:
+                      name: Василий
+                      surname: Иванов
+                      patronymic: Петрович
+                  - id: 2
+                    regNum: Y222YY777
+                    mark: Nissan
+                    model: Z350
+                    year: 2005
+                    owner:
+                      name: Василий
+                      surname: Иванов
+                      patronymic: Петрович
+        400:
+          description: Ошибки в аргументе или запросах
+          content:
+            application/json:
+              schema:
+                title: car creating error
+                type: object
+                example: car creating error
+        500:
+          description: Ошибка на стороне сервера
+  /car/edit/{id}:
+    put:
+      tags:
+        - Редактировать данные автомобиля
+      summary: Позволяет редактровать данные автомобиля
+      description: Редактировать данные автомобиля
+      operationId: EditCar
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор по которому метод найдет автомобиль в БД для редактирования
+          required: true
+          schema:
+            type: string
+          allowEmptyValue: false
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                  regNum: O888OO999
+                  model: Land Cruiser
+                  owner:
+                    surname: Петров
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                title: Car
+                type: object
+                example:
+                    id: 1
+                    regNum: O888OO999
+                    mark: Toyota
+                    model: Land Cruiser
+                    year: 2010
+                    owner:
+                      name: Василий
+                      surname: Петров
+                      patronymic: Петрович
+        400:
+          description: Ошибки в аргументе или запросах
+          content:
+            application/json:
+              schema:
+                title: one car getting error
+                example: one car getting error
+        500:
+          description: Ошибка на стороне сервера
+  /car/delete/{id}:
+    delete:
+      tags:
+        - Удалить автомобиль из базы данных
+      summary: Позволяет удалить автомобиль из базы данных
+      description: Метод ***удалит*** автомобиль из базы данных по ***id***
+      operationId: DeleteCar
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор по которому метод найдет автомобиль в БД для удаления
+          required: true
+          schema:
+            type: string
+          allowEmptyValue: false
+          example: 2
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                title: Car deleted
+                type: string
+                example: car deleted
+        400:
+          description: Неуспешный ответ
+          content:
+            application/json:
+              schema:
+                title: car deleting error
+                type: string
+                example: car deleting error
+        500:
+          description: Ошибка на стороне сервера
+components:
+  schemas:
+    Car:
+      title: Cars
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор автомобиля в базе данных
+          example: 5
+        regNum:
+          type: string
+          description: Регистрационный номер автомобиля
+          example: X123XX150
+        mark:
+          type: string
+          description: Марка автомобиля
+          example: Lada
+        model:
+          type: string
+          description: Модель автомобиля
+          example: Vesta
+        year:
+          type: integer
+          description: Год выпуска автомобиля
+          example: 2002
+        owner:
+          $ref: '#/components/schemas/People'
+    People:
+      title: Владелец автомобиля
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя владельца
+          example: Иван
+        surname:
+          type: string
+          description: Фамилия владельца
+          example: Иванов
+        patronymic:
+          type: string
+          description: Отчество владельца
+          example: Иванович
