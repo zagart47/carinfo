@@ -8,14 +8,14 @@ info:
     email: zagart47@gmail.com
     url: https://t.me/zagart47
 servers:
-  - url: 'https://localhost:8080'
+  - url: http://localhost:8080
 paths:
   /cars:
     get:
       tags:
         - Все автомобили
       summary: Получить список всех автомобилей из базы данных
-      description: Хендлер для получения ***всех*** автомобилей из базы данных. Есть возможность использовать фильтрацию и пагинацию.
+      description: Хендлер для получения всех автомобилей из базы данных. Есть возможность использовать фильтрацию и пагинацию.
       operationId: GetAllCars
       parameters:
         - name: page
@@ -116,7 +116,7 @@ paths:
       tags:
         - Один автомобиль
       summary: Получить один автомобиль по id из базы данных
-      description: Хендлер для получения ***одного*** автомобиля из базы данных
+      description: Хендлер для получения одного автомобиля из базы данных
       operationId: GetOneCar
       parameters:
         - name: id
@@ -168,7 +168,6 @@ paths:
                   type: array
                   example: [ "X111XX777","Y222YY777" ]
                   description: Регистрационный номер автомобиля
-                  required: true
       responses:
         200:
           description: Успешный ответ
@@ -265,7 +264,7 @@ paths:
       tags:
         - Удалить автомобиль из базы данных
       summary: Позволяет удалить автомобиль из базы данных
-      description: Метод ***удалит*** автомобиль из базы данных по ***id***
+      description: Метод удалит автомобиль из базы данных по id
       operationId: DeleteCar
       parameters:
         - name: id
@@ -304,23 +303,18 @@ components:
         id:
           type: string
           description: Идентификатор автомобиля в базе данных
-          example: 5
         regNum:
           type: string
           description: Регистрационный номер автомобиля
-          example: X123XX150
         mark:
           type: string
           description: Марка автомобиля
-          example: Lada
         model:
           type: string
           description: Модель автомобиля
-          example: Vesta
         year:
           type: integer
           description: Год выпуска автомобиля
-          example: 2002
         owner:
           $ref: '#/components/schemas/People'
     People:
@@ -330,12 +324,9 @@ components:
         name:
           type: string
           description: Имя владельца
-          example: Иван
         surname:
           type: string
           description: Фамилия владельца
-          example: Иванов
         patronymic:
           type: string
           description: Отчество владельца
-          example: Иванович
